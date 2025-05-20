@@ -30,19 +30,19 @@ Spring Boot + JPA + MySQL을 활용한 할 일 관리 백엔드 API입니다.
 ---
 
 ## 📁 프로젝트 구조
-springstart/                                
-├── src/                                
-│   ├── main/                                
-│   │   ├── java/                                
-│   │   │   └── com/example/springstart/                                
+springstart/                                                                                                
+├── src/                                                                                                
+│   ├── main/                                                                                                
+│   │   ├── java/                                                                                                
+│   │   │   └── com/example/springstart/                                                                                                
 │   │   │       ├── controller/                                
-│   │   │       ├── domain/                                
-│   │   │       ├── dto/                                
-│   │   │       ├── service/                                
-│   │   │       ├── repository/                                
-│   │   │       └── exception/                                
-│   └── resources/                                
-│       └── application.properties                                                                 
+│   │   │       ├── domain/                                                                                                
+│   │   │       ├── dto/                                                                                                
+│   │   │       ├── service/                                                                                                
+│   │   │       ├── repository/                                                                                                
+│   │   │       └── exception/                                                                                                
+│   └── resources/                                                                                                
+│       └── application.properties                                                                                                                                 
                                                                         
 ---                                
                                 
