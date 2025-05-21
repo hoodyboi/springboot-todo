@@ -1,60 +1,90 @@
-# 🗂 Spring Boot To-Do 앱
+# 📝 Spring Boot Todo API
 
-Spring Boot + JPA + MySQL을 활용한 할 일 관리 백엔드 API입니다.
+간단한 할 일 관리 API 서버입니다.  
+Spring Boot, MySQL, JPA 기반으로 제작되었으며, 현재 EC2 서버에 배포되어 실행 중입니다.
+
+---
+
+## 🚀 배포 주소
+
+- Swagger UI: [http://15.164.245.146:8080/swagger-ui.html](http://15.164.245.146:8080/swagger-ui.html)
 
 ---
 
 ## ✅ 주요 기능
-- ✅ 할 일 등록 (POST /todos)
-- 📋 전체 목록 조회 (GET /todos)
-- 🔄 완료 여부 수정 (PUT /todos/{id})
-- ❌ 삭제 (DELETE /todos/{id})
-- ↔️ 상태 토글 (PUT /todos/{id}/toggle)
-- 🔍 키워드 검색 (GET /todos/search?keyword=...)
-- 📌 정렬 (GET /todos/sorted?by=title|createdAt)
-- 📄 페이징 처리 (GET /todos/page?page=0&size=3)
-- 📊 완료/미완료 조건 조회
-- 🧪 Swagger 연동 (`http://localhost:8080/swagger-ui/index.html`)
+
+- 할 일 등록 (POST /todos)
+- 할 일 전체 조회 / 조건 조회 (GET /todos)
+- 할 일 수정 (PUT /todos/{id})
+- 할 일 삭제 (DELETE /todos/{id})
+- 완료 여부 토글 (PATCH /todos/{id}/toggle)
+- 완료된 할 일만 조회 (GET /todos/completed)
+- 페이징, 정렬, 필터링 기능 포함
 
 ---
 
 ## 🛠 기술 스택
-- Java 17
-- Spring Boot 3.4.5
-- Spring Data JPA
-- MySQL
-- Lombok
-- Swagger (springdoc-openapi v2.1.0)
-- Gradle
+
+| 영역 | 기술 |
+|------|------|
+| 언어 | Java 17 |
+| 프레임워크 | Spring Boot 3 |
+| 데이터베이스 | MySQL 8 (EC2 내부 설치) |
+| ORM | Spring Data JPA |
+| 문서화 | SpringDoc OpenAPI (Swagger UI) |
+| 배포 | AWS EC2 (Ubuntu 22.04) |
+| 빌드 | Gradle (Jar 패키징) |
 
 ---
 
 ## 📁 프로젝트 구조
-springstart/                                                                                                
-├── src/                                                                                                
-│   ├── main/                                                                                                
-│   │   ├── java/                                                                                                
-│   │   │   └── com/example/springstart/                                                                                                
-│   │   │       ├── controller/                                
-│   │   │       ├── domain/                                                                                                
-│   │   │       ├── dto/                                                                                                
-│   │   │       ├── service/                                                                                                
-│   │   │       ├── repository/                                                                                                
-│   │   │       └── exception/                                                                                                
-│   └── resources/                                                                                                
-│       └── application.properties                                                                                                                                 
-                                                                        
----                                
-                                
-## 🚧 개발 예정 기능
-- [ ] ✅ JWT 로그인 인증
-- [ ] ✅ 사용자별 할 일 관리
-- [ ] ✅ 테스트 코드 작성
-- [ ] ✅ Render 또는 AWS EC2 배포
+
+```
+src
+├── main
+│   ├── java
+│   │   └── com.example.springstart
+│   │       ├── controller     # REST API 엔드포인트
+│   │       ├── service        # 비즈니스 로직 처리
+│   │       ├── repository     # JPA 인터페이스 (DB 접근)
+│   │       ├── domain         # Entity 클래스
+│   │       └── dto            # 요청/응답 DTO
+│   └── resources
+│       ├── application.properties
+│       └── static / templates (필요 시)
+├── test
+│   └── com.example.springstart
+│       └── SpringstartApplicationTests.java
+```
 
 ---
 
-## 🙋‍♂️ 개발자
+## 📄 API 명세 요약
 
-- GitHub: [hoodyboi](https://github.com/hoodyboi)
-- 프로젝트명: `springboot-todo`
+| Method | URL | 설명 |
+|--------|-----|------|
+| `GET` | `/todos` | 전체 할 일 조회 (페이징/필터 지원) |
+| `POST` | `/todos` | 새 할 일 등록 |
+| `PUT` | `/todos/{id}` | 할 일 내용 수정 |
+| `PATCH` | `/todos/{id}/toggle` | 완료 여부 토글 |
+| `GET` | `/todos/completed` | 완료된 항목만 조회 |
+| `DELETE` | `/todos/{id}` | 할 일 삭제 |
+
+> 자세한 명세는 Swagger UI 페이지 참고
+
+---
+
+## ⚙️ 실행 방법
+
+```bash
+# 1. 빌드 (테스트 생략)
+./gradlew build -x test
+
+# 2. 실행
+java -jar build/libs/springstart-0.0.1-SNAPSHOT.jar
+
+```
+🙋‍♂️ 개발자
+	•	이름: 최종민
+	•	GitHub: https://github.com/hoodyboi
+	•	Email: hoodyboi@naver.com
