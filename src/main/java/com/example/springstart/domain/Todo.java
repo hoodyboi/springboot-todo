@@ -1,5 +1,6 @@
 package com.example.springstart.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -17,6 +18,14 @@ public class Todo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable =false)
+    private User user;
+
+    public User getUser(){
+        return user;
+    }
 
     @Schema(description ="할 일 제목", example = "운동하기")
     @Column(nullable = false, length = 100)
@@ -40,6 +49,12 @@ public class Todo {
     public Todo(String title, boolean completed){
         this.title = title;
         this.completed = completed;
+    }
+
+    public Todo(String title, boolean completed, User user){
+        this.title = title;
+        this.completed = completed;
+        this.user = user;
     }
 
     public Long getId() {

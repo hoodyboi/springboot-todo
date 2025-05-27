@@ -2,6 +2,8 @@ package com.example.springstart.controller;
 
 import com.example.springstart.domain.Todo;
 import com.example.springstart.dto.CreateTodoRequest;
+import com.example.springstart.dto.LoginRequestDto;
+import com.example.springstart.dto.TodoResponseDto;
 import com.example.springstart.dto.UpdateTodoRequest;
 import com.example.springstart.service.TodoService;
 
@@ -12,12 +14,13 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/todos")
+@RequestMapping("/api/todos")
 public class TodoController {
 
     private final TodoService todoService;
@@ -39,8 +42,8 @@ public class TodoController {
 
     @Operation(summary = "모든 할 일 조회", description ="등록 되어 있는 모든 일(Todo)을 조회합니다")
     @GetMapping
-    public List<Todo> getTodos() {
-        return todoService.getAllTodos();
+    public List<TodoResponseDto> getTodos(){
+        return todoService.getMyTodos();
     }
 
     @Operation(
@@ -51,7 +54,7 @@ public class TodoController {
                 @ApiResponse(responseCode = "200", description = "성공적으로 조회함"),
                 @ApiResponse(responseCode = "404", description = "해당 ID가 존재하지 않음")
                 })
-    @GetMapping("/{id}")
+    @GetMapping("/{id:[0-9]+}")
     public Todo getTodoById(@PathVariable Long id) {
         return todoService.findById(id);
     }
@@ -129,4 +132,15 @@ public class TodoController {
     public Page<Todo> getIncompleteTodosPaged(Pageable pageable){
         return todoService.getIncompleteTodosPaged(pageable);
     }
+
+    @Operation(
+        summary = "나의 할 일 조회",
+        description = "나의 모든 할 일을 조회합니다"
+    )
+    @GetMapping("/my")
+    public ResponseEntity<List<TodoResponseDto>> getMyTodos(){
+        List<TodoResponseDto> myTodos = todoService.getMyTodos();
+        return ResponseEntity.ok(myTodos);
+    }
+
 }
