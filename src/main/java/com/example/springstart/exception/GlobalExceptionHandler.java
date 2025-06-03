@@ -1,5 +1,9 @@
 package com.example.springstart.exception;
 
+import com.example.springstart.dto.ErrorResponse;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -37,7 +41,7 @@ public class GlobalExceptionHandler {
         Map<String, Object> response = new HashMap<>();
         response.put("timestamp", LocalDateTime.now());
         response.put("status", HttpStatus.BAD_REQUEST.value());
-        response.put("error", "Bad quest");
+        response.put("error", "Bad Request");
         response.put("message", fieldErrors);
         response.put("code", "VALIDATION_ERROR");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
@@ -54,6 +58,32 @@ public class GlobalExceptionHandler {
         error.put("code", "ACCESS_DENIED");
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorResponse> handleExpiredJwtException(ExpiredJwtException e, HttpServletRequest request) {
+        ErrorResponse error = new ErrorResponse(
+                LocalDateTime.now(),
+                401,
+                "UNAUTHORIZED",
+                "토큰이 만료되었습니다.",
+                "EXPIRED_TOKEN"
+        );
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+    }
+
+    @ExceptionHandler(JwtException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorResponse> handlerJwtException(JwtException e, HttpServletRequest request){
+        ErrorResponse error =new ErrorResponse(
+                LocalDateTime.now(),
+                401,
+                "UNAUTHORIZED",
+                e.getMessage(),
+                "INVALID_TOKEN"
+        );
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 }
 

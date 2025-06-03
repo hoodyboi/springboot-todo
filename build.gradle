@@ -1,49 +1,49 @@
+/* ───────────────────────────────────────────────
+ *  Gradle build (Groovy DSL)
+ *  ✅ 테스트 라이브러리는 반드시 testImplementation !!
+ *  ✅ JUnit 5 사용 설정까지 포함
+ * ───────────────────────────────────────────── */
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.1.5'
 	id 'io.spring.dependency-management' version '1.1.7'
 }
 
-group = 'com.example'
+group   = 'com.example'
 version = '0.0.1-SNAPSHOT'
-
-java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
-	}
-}
-
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-}
+sourceCompatibility = '17'
 
 repositories {
 	mavenCentral()
 }
 
 dependencies {
+
+	/* ────────── 애플리케이션 런타임 ────────── */
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'com.mysql:mysql-connector-j'
-
-	// Swagger 호환 안정 버전 (⬅ 여기가 핵심)
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
-
-	// 기타 설정
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 
-	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-	implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
-	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+	runtimeOnly   'com.mysql:mysql-connector-j'
 
+	/* Swagger(OpenAPI) */
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
+
+	/* JWT */
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	runtimeOnly   'io.jsonwebtoken:jjwt-impl:0.11.5',
+			'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+	/* Lombok (컴파일 타임 한정) */
+	compileOnly         'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+
+	/* ────────── **테스트 전용** (여기가 핵심!) ────────── */
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'     // junit-jupiter 포함
+	testImplementation 'org.springframework.security:spring-security-test'     // MockMvc + Security
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+	useJUnitPlatform()   // JUnit 5 엔진 활성화
 }

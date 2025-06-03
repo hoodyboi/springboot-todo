@@ -10,11 +10,13 @@ import com.example.springstart.service.TodoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -134,13 +136,24 @@ public class TodoController {
     }
 
     @Operation(
-        summary = "나의 할 일 조회",
-        description = "나의 모든 할 일을 조회합니다"
+        summary = "내 할 일 조회",
+        description = "로그인한 사용자의 할 일만 조회합니다. JWT 인증이 필요합니다.",
+        security = { @SecurityRequirement(name = "JWT")}
     )
+    @ApiResponses(value ={
+            @ApiResponse(responseCode = "200", description = "할 일 목록 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "JWT 인증 실패 또는 만료")
+    })
     @GetMapping("/my")
     public ResponseEntity<List<TodoResponseDto>> getMyTodos(){
         List<TodoResponseDto> myTodos = todoService.getMyTodos();
         return ResponseEntity.ok(myTodos);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/admin/todos")
+    public ResponseEntity<?> deleteAllTodos(){
+        todoService.deleteAllTodos();
+        return ResponseEntity.ok().body("모든 할 일이 삭제되었습니다.");
+    }
 }

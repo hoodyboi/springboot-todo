@@ -1,16 +1,18 @@
 package com.example.springstart.jwt;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 import com.example.springstart.service.UserDetailsServiceImpl;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.IOException;
 
@@ -37,20 +39,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = authHeader.substring(7);
 
-        if (jwtUtil.validateToken(token)) {
+        try {
             String username = jwtUtil.getUsernameFromToken(token);
+            jwtUtil.validateTokenOrThrow(token);
 
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
-
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
             SecurityContextHolder.getContext().setAuthentication(authentication);
-        }
 
-        filterChain.doFilter(request, response);
+            filterChain.doFilter(request, response);
+
+        } catch (ExpiredJwtException e) {
+            request.setAttribute("exception", "EXPIRED_TOKEN");
+            throw new AuthenticationCredentialsNotFoundException("만료된 JWT 토큰입니다", e);
+
+        } catch (JwtException e) {
+            request.setAttribute("exception", "INVALID_TOKEN");
+            throw new AuthenticationCredentialsNotFoundException("유효하지 않은 JWT 토큰입니다", e);
+        }
     }
 }
