@@ -7,7 +7,7 @@ Spring Boot, MySQL, JPA 기반으로 제작되었으며, 현재 EC2 서버에 �
 
 ## 🚀 배포 주소
 
-- Swagger UI: [http://15.164.245.146:8080/swagger-ui/index.html](http://15.164.245.146:8080/swagger-ui/index.html)
+- Swagger UI: [http://54.180.245.143:8080/swagger-ui/index.html]
 
 ---
 
