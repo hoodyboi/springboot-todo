@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.text.Collator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -125,5 +126,32 @@ public class TodoService {
     // 미완료 Todo 페이징
     public Page<Todo> getIncompleteTodosPaged(Pageable pageable) {
         return todoRepository.findByCompletedFalse(pageable);
+    }
+
+    public List<TodoResponseDto> getTodosSortedByTitleDesc(){
+        User user = userService.getCurrentUser();
+        return todoRepository.findByUserUsername(user.getUsername()).stream()
+                .sorted((a,b) -> b.getTitle().compareTo(a.getTitle()))
+                .map(TodoResponseDto::new)
+                .collect((Collectors.toList()));
+    }
+
+    public List<TodoResponseDto> getTodosSortedByTitleAsc(){
+        User user = userService.getCurrentUser();
+
+        return todoRepository.findByUserUsername(user.getUsername()).stream()
+                .sorted((a,b) -> Collator.getInstance().compare(a.getTitle(), b.getTitle()))
+                .map(TodoResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    public Page<TodoResponseDto> getTodoDtosByPage(Pageable pageable){
+        Page<Todo> todos = todoRepository.findAll(pageable);
+        return todos.map(TodoResponseDto::new);
+    }
+
+    public Page<Todo> getCompletedTodosByUserPaged(Pageable pageable){
+        String username = userService.getCurrentUser().getUsername();
+        return todoRepository.findByUserUsernameAndCompletedTrue(username, pageable);
     }
 }

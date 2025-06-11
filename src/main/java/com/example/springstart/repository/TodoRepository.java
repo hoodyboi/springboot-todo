@@ -12,5 +12,5 @@ public interface TodoRepository extends JpaRepository<Todo, Long>{
     List<Todo> findByUserUsername(String name);
     Page<Todo> findByCompletedTrue(Pageable pageable);
     Page<Todo> findByCompletedFalse(Pageable pageable);
-
+    Page<Todo> findByUserUsernameAndCompletedTrue(String username, Pageable pageable);
 }
