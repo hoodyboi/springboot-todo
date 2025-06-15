@@ -1,0 +1,44 @@
+name: CI
+
+# push 또는 PR 이벤트가 발생할 때마다 실행
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1) 코드를 체크아웃
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2) JDK 17 셋업
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # 3) Gradle 캐시 설정 (optional)
+      - name: Cache Gradle cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*','**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      # 4) 프로젝트 빌드
+      - name: Build with Gradle
+        run: ./gradlew clean build --no-daemon
+
+      # 5) 단위 테스트 실행
+      - name: Run tests
+        run: ./gradlew test --no-daemon
