@@ -1,3 +1,6 @@
+server:
+  port: 8081
+
 spring:
   application:
     name: springstart
@@ -25,3 +28,6 @@ jwt:
   secret: ${JWT_SECRET}     # 환경변수로 주입
   access-exp-min: 15        # Access  만료 15분
   refresh-exp-day: 7        # Refresh 만료 7일
+
+logging.level.org.hibernate.SQL: debug
+logging.level.org.hibernate.type.descriptor.sql.BasicBinder: trace

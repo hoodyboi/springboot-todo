@@ -154,4 +154,12 @@ public class TodoService {
         String username = userService.getCurrentUser().getUsername();
         return todoRepository.findByUserUsernameAndCompletedTrue(username, pageable);
     }
+
+    public Page<Long> findTodoIds(Pageable pageable){
+        return todoRepository.findTodoIds(pageable);
+    }
+
+    public List<Todo> findTodoWithUserByIds(List<Long> ids){
+        return todoRepository.findWithUserByIdIn(ids);
+    }
 }

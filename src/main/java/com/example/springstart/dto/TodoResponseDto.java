@@ -22,7 +22,7 @@ public class TodoResponseDto {
     private LocalDateTime createdAt;
 
     @Schema(description = "수정 일시", example = "2025-05-21T11:00:00")
-    private LocalDateTime updateAt;
+    private LocalDateTime updatedAt;
 
     @Schema(description = "작성자 이름", example = "jm4")
     private String username;
@@ -32,7 +32,11 @@ public class TodoResponseDto {
         this.title = todo.getTitle();
         this.completed = todo.isCompleted();
         this.createdAt = todo.getCreatedAt();
-        this.updateAt = todo.getUpdatedAt();
+        this.updatedAt = todo.getUpdatedAt();
         this.username = todo.getUser().getUsername();
+    }
+
+    public static TodoResponseDto from(Todo todo){
+        return new TodoResponseDto(todo);
     }
 }

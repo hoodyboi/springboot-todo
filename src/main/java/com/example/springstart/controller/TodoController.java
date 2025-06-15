@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -42,10 +43,18 @@ public class TodoController {
         return "할 일이 등록되었습니다: " + request.getTitle();
     }
 
-    @Operation(summary = "모든 할 일 조회", description ="등록 되어 있는 모든 일(Todo)을 조회합니다")
+    @Operation(
+            summary = "모든 할 일 페이지네이션 조회",
+            description = "Todo + User를 fetch-join으로 가져옵니다. page, size, sort 파라미터 사용 가능"
+    )
     @GetMapping
-    public List<TodoResponseDto> getTodos(){
-        return todoService.getMyTodos();
+    public Page<TodoResponseDto> getTodos(Pageable pageable){
+        Page<Long> idPage = todoService.findTodoIds(pageable);
+        List<TodoResponseDto> content = todoService.findTodoWithUserByIds(idPage.getContent())
+                .stream()
+                .map(TodoResponseDto::from)
+                .toList();
+        return new PageImpl<>(content, pageable, idPage.getTotalElements());
     }
 
     @Operation(
