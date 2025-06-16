@@ -1,8 +1,4 @@
-/* ───────────────────────────────────────────────
- *  Gradle build (Groovy DSL)
- *  ✅ 테스트 라이브러리는 반드시 testImplementation !!
- *  ✅ JUnit 5 사용 설정까지 포함
- * ───────────────────────────────────────────── */
+
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.1.5'
@@ -48,5 +44,6 @@ dependencies {
 }
 
 tasks.named('test') {
-	useJUnitPlatform()   // JUnit 5 엔진 활성화
+	useJUnitPlatform()
+	systemProperty 'spring.profiles.active', 'test'
 }
