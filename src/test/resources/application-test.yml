@@ -12,3 +12,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+jwt:
+  secret: testsecretkeyforeveryone_thisisalongsecretkey!
+  access-exp-min: 15
+  refresh-exp-day: 7
