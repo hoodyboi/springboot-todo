@@ -14,7 +14,7 @@ public class TestController {
 
     private final TodoRepository todoRepository;
 
-    /** 1️⃣ N+1 재현 */
+    /** N+1 재현 */
     @GetMapping("/api/test/nplus")
     public List<TodoResponseDto> testNPlus() {
         return todoRepository.findAll()                      // 순수 LAZY
@@ -23,7 +23,7 @@ public class TestController {
                 .toList();
     }
 
-    /** 2️⃣ Fetch-Join (@EntityGraph) 테스트 */
+    /** Fetch-Join (@EntityGraph) 테스트 */
     @GetMapping("/api/test/graph")
     public List<TodoResponseDto> testEntityGraph() {
         return todoRepository.findAllWithGraph()             // Fetch-Join
@@ -32,7 +32,7 @@ public class TestController {
                 .toList();
     }
 
-    /** 3️⃣ BatchSize 테스트 */
+    /** BatchSize 테스트 */
     @GetMapping("/api/test/batch")
     public List<TodoResponseDto> testBatch() {
         return todoRepository.findAll()                      // 순수 LAZY + @BatchSize
